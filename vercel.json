@@ -1,11 +1,16 @@
 {
   "version": 2,
+  "functions": {
+    "src/**": {
+      "runtime": "@vercel/node@18"
+    }
+  },
   "builds": [
     {
       "src": "package.json",
       "use": "@vercel/static-build",
       "config": {
-        "buildCommand": "npm run build",
+        "buildCommand": "npm run build:vercel",
         "outputDirectory": "build"
       }
     }
@@ -27,8 +32,5 @@
       "src": "/(.*)",
       "dest": "/index.html"
     }
-  ],
-  "env": {
-    "NODE_OPTIONS": "--openssl-legacy-provider"
-  }
+  ]
 }
