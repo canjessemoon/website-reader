@@ -12,6 +12,8 @@ export const useSpeechSynthesis = () => {
     const [speed, setSpeed] = useState(1.0);
     const [text, setText] = useState('');
     const utteranceRef = useRef(null);
+    const chunksRef = useRef([]);
+    const currentChunkIndexRef = useRef(0);
     
     // Fix for Chrome's bug where speechSynthesis stops working after ~15 seconds of inactivity
     useEffect(() => {
@@ -115,44 +117,45 @@ export const useSpeechSynthesis = () => {
             chunks.push(content);
         }
         
-        // Start with the first chunk
-        const firstChunk = chunks[0];
-        const utterance = new SpeechSynthesisUtterance(firstChunk);
-        utterance.rate = speed;
+        console.log(`Speaking text in ${chunks.length} chunks`);
         
-        // If there are multiple chunks, handle transitions between them
-        if (chunks.length > 1) {
-            let currentIndex = 0;
+        // Store chunks for potential pause/resume
+        chunksRef.current = chunks;
+        currentChunkIndexRef.current = 0;
+        
+        // Function to speak chunks sequentially
+        const speakChunk = (index) => {
+            if (index >= chunks.length) {
+                setSpeaking(false);
+                chunksRef.current = [];
+                currentChunkIndexRef.current = 0;
+                return;
+            }
+            
+            currentChunkIndexRef.current = index;
+            
+            const utterance = new SpeechSynthesisUtterance(chunks[index]);
+            utterance.rate = speed;
             
             utterance.onend = () => {
-                currentIndex++;
-                if (currentIndex < chunks.length) {
-                    const nextUtterance = new SpeechSynthesisUtterance(chunks[currentIndex]);
-                    nextUtterance.rate = speed;
-                    
-                    if (currentIndex === chunks.length - 1) {
-                        // Last chunk should use the regular end event
-                        nextUtterance.onend = () => setSpeaking(false);
-                    } else {
-                        // Chain to the next chunk
-                        nextUtterance.onend = utterance.onend;
-                    }
-                    
-                    utteranceRef.current = nextUtterance;
-                    speechSynthesis.speak(nextUtterance);
-                } else {
-                    setSpeaking(false);
-                }
+                console.log(`Finished chunk ${index + 1} of ${chunks.length}`);
+                // Speak the next chunk
+                speakChunk(index + 1);
             };
-        } else {
-            setupUtteranceEvents(utterance);
-        }
+            
+            utterance.onerror = (event) => {
+                console.error('SpeechSynthesis error on chunk', index, ':', event);
+                setSpeaking(false);
+                chunksRef.current = [];
+                currentChunkIndexRef.current = 0;
+            };
+            
+            utteranceRef.current = utterance;
+            speechSynthesis.speak(utterance);
+        };
         
-        // Store utterance in ref for later use
-        utteranceRef.current = utterance;
-        
-        // Start speaking
-        speechSynthesis.speak(utterance);
+        // Start speaking from the first chunk
+        speakChunk(0);
         setSpeaking(true);
         setText(content);
     };
@@ -184,6 +187,9 @@ export const useSpeechSynthesis = () => {
         if (speechSynthesis) {
             speechSynthesis.cancel();
             setSpeaking(false);
+            utteranceRef.current = null;
+            chunksRef.current = [];
+            currentChunkIndexRef.current = 0;
         }
     };
     
