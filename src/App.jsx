@@ -4,6 +4,7 @@ import ReadableContent from './components/ReadableContent';
 import ControlPanel from './components/ControlPanel';
 import ErrorMessage from './components/ErrorMessage';
 import TTSTest from './components/TTSTest';
+import ProxyStatus from './components/ProxyStatus';
 import { extractContent } from './utils/contentExtractor';
 import { validateUrl } from './utils/urlValidator';
 import { useSpeechSynthesis } from './utils/speechSynthesis';
@@ -15,6 +16,7 @@ const App = () => {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const [debugMode, setDebugMode] = useState(false);
+    const [showProxyStatus, setShowProxyStatus] = useState(false);
     const { 
         speaking, 
         setSpeaking, 
@@ -72,7 +74,7 @@ const App = () => {
                     <p className="text-gray-600">Enter a URL to extract and read the content aloud</p>
                     
                     {/* Debug Mode Toggle */}
-                    <div className="mt-4">
+                    <div className="mt-4 flex flex-col sm:flex-row items-center justify-center space-y-2 sm:space-y-0 sm:space-x-4">
                         <label className="inline-flex items-center">
                             <input
                                 type="checkbox"
@@ -82,6 +84,13 @@ const App = () => {
                             />
                             <span className="ml-2 text-sm text-gray-600">Debug Mode (TTS Test)</span>
                         </label>
+                        
+                        <button
+                            onClick={() => setShowProxyStatus(true)}
+                            className="px-3 py-1 text-xs bg-gray-600 text-white rounded hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500"
+                        >
+                            Check Proxy Status
+                        </button>
                     </div>
                 </header>
 
@@ -136,6 +145,11 @@ const App = () => {
                         Note: Some websites may block content extraction due to CORS restrictions.
                     </p>
                 </footer>
+                
+                {/* Proxy Status Modal */}
+                {showProxyStatus && (
+                    <ProxyStatus onClose={() => setShowProxyStatus(false)} />
+                )}
             </div>
         </div>
     );
