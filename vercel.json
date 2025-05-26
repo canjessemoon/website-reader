@@ -3,7 +3,8 @@
   "env": {
     "NODE_OPTIONS": "--openssl-legacy-provider",
     "GENERATE_SOURCEMAP": "false",
-    "CI": "false"
+    "CI": "false",
+    "PUBLIC_URL": ""
   },
   "buildCommand": "npm run build:vercel",
   "outputDirectory": "build",
