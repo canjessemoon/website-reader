@@ -9,7 +9,7 @@
     "build": "react-scripts build",
     "build:legacy": "set NODE_OPTIONS=--openssl-legacy-provider && react-scripts build",
     "build:prod": "set NODE_OPTIONS=--openssl-legacy-provider && set PUBLIC_URL=/website-reader && react-scripts build",
-    "build:vercel": "react-scripts build",
+    "build:vercel": "node build-script.js",
     "test": "set NODE_OPTIONS=--openssl-legacy-provider && react-scripts test",
     "test:ci": "set NODE_OPTIONS=--openssl-legacy-provider && react-scripts test --watchAll=false --coverage",
     "eject": "react-scripts eject",
