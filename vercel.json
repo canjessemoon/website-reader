@@ -1,17 +1,13 @@
 {
   "version": 2,
-  "functions": {
-    "src/**": {
-      "runtime": "@vercel/node@18"
-    }
-  },
   "builds": [
     {
       "src": "package.json",
       "use": "@vercel/static-build",
       "config": {
         "buildCommand": "npm run build:vercel",
-        "outputDirectory": "build"
+        "outputDirectory": "build",
+        "nodeVersion": "18.x"
       }
     }
   ],
