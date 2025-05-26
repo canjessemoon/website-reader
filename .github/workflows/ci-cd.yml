@@ -1,0 +1,72 @@
+name: Website Reader CI/CD
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [14.x, 16.x]
+
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v2
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+      env:
+        NODE_OPTIONS: --openssl-legacy-provider
+    
+    - name: Build
+      run: npm run build
+      env:
+        NODE_OPTIONS: --openssl-legacy-provider
+    
+    - name: Run tests
+      run: npm run test:ci
+      env:
+        NODE_OPTIONS: --openssl-legacy-provider
+    
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: build-files
+        path: build/
+
+  deploy-to-gh-pages:
+    needs: build-and-test
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Use Node.js 16.x
+      uses: actions/setup-node@v2
+      with:
+        node-version: 16.x
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+      env:
+        NODE_OPTIONS: --openssl-legacy-provider
+    
+    - name: Deploy to GitHub Pages
+      run: |
+        git config --global user.name ${{ github.actor }}
+        git config --global user.email ${{ github.actor }}@users.noreply.github.com
+        npm run deploy
+      env:
+        NODE_OPTIONS: --openssl-legacy-provider

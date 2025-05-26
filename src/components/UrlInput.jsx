@@ -1,0 +1,42 @@
+import React, { useState } from 'react';
+
+const UrlInput = ({ onSubmit }) => {
+    const [url, setUrl] = useState('');
+
+    const handleChange = (event) => {
+        setUrl(event.target.value);
+    };
+
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        if (url) {
+            // Add https:// if no protocol is specified
+            let processedUrl = url;
+            if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                processedUrl = 'https://' + url;
+            }
+            onSubmit(processedUrl);
+        }
+    };    return (
+        <div className="w-full max-w-3xl mx-auto mb-6 px-4 sm:px-6">
+            <form onSubmit={handleSubmit} className="flex flex-col md:flex-row w-full">
+                <input
+                    type="text"
+                    value={url}
+                    onChange={handleChange}
+                    placeholder="Enter website URL (e.g., https://example.com)"
+                    className="flex-grow px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 mb-2 md:mb-0 md:mr-2"
+                    aria-label="Website URL"
+                />
+                <button 
+                    type="submit" 
+                    className="px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                    Read Website
+                </button>
+            </form>
+        </div>
+    );
+};
+
+export default UrlInput;

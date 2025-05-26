@@ -1,0 +1,54 @@
+{
+  "name": "website-reader",
+  "version": "1.0.0",
+  "description": "A web application that reads the content of webpages aloud to the user.",
+  "main": "src/index.jsx",
+  "homepage": "https://YOUR_GITHUB_USERNAME.github.io/website-reader",
+  "scripts": {
+    "start": "set NODE_OPTIONS=--openssl-legacy-provider && react-scripts start",
+    "build": "set NODE_OPTIONS=--openssl-legacy-provider && react-scripts build",
+    "build:prod": "set NODE_OPTIONS=--openssl-legacy-provider && set PUBLIC_URL=/website-reader && react-scripts build",
+    "test": "set NODE_OPTIONS=--openssl-legacy-provider && react-scripts test",
+    "test:ci": "set NODE_OPTIONS=--openssl-legacy-provider && react-scripts test --watchAll=false --coverage",
+    "eject": "react-scripts eject",
+    "predeploy": "npm run build:prod",
+    "deploy": "gh-pages -d build",
+    "deploy:netlify": "netlify deploy --prod --dir=build"
+  },
+  "keywords": [
+    "text-to-speech",
+    "web-reader",
+    "accessibility"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {
+    "@mozilla/readability": "^0.4.2",
+    "dompurify": "^2.3.3",
+    "jsdom": "^19.0.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-scripts": "4.0.3",
+    "tailwindcss": "^3.0.0"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^12.1.5",
+    "@testing-library/user-event": "^13.5.0",
+    "autoprefixer": "^10.4.0",
+    "gh-pages": "^6.3.0",
+    "postcss": "^8.4.5"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
