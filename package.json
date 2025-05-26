@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "A web application that reads the content of webpages aloud to the user.",
   "main": "src/index.jsx",
-  "homepage": "https://YOUR_GITHUB_USERNAME.github.io/website-reader",
+  "homepage": "https://canjessemoon.github.io/website-reader",
   "scripts": {
     "start": "set NODE_OPTIONS=--openssl-legacy-provider && react-scripts start",
     "build": "set NODE_OPTIONS=--openssl-legacy-provider && react-scripts build",
